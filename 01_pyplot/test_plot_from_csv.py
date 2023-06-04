@@ -3,34 +3,41 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 fig, ax = plt.subplots()
-df_origin = pd.read_csv("storeData.csv")
-print(df_origin)
+df_origin = pd.read_csv("storeData2D.csv")
 df = df_origin.copy()
 
-def update_chart(i):
-    # Get the latest data
-    new_data = df_origin[0+i:8000+i]   
+df_dropped = df.drop_duplicates(subset = ["yaw", "pitch", "robot_x", "robot_y", "robot_z"], keep = 'last')
+open('storeData2D_final.csv', 'w', encoding='UTF8', newline='')
+df_dropped.to_csv('storeData2D_final.csv')
+ax.plot(df_dropped['x'], df_dropped['y'])
+ax.set_xlim(-400, 400)
+ax.set_ylim(-400, 400) 
+plt.show()
 
-    # # Append the new data to the dataframe
-    # df.loc[i] = new_data
+# def update_chart(i):
+#     # Get the latest data
+#     new_data = df_origin[0+i:8000+i]   
 
-    # Clear the previous plot
-    ax.cla()
+#     # # Append the new data to the dataframe
+#     # df.loc[i] = new_data
 
-    # Plot the updated data
-    ax.plot(new_data['0'], new_data['0.1'])   
+#     # Clear the previous plot
+#     ax.cla()
 
-    # Optionally set axis limits
-    ax.set_xlim(-400, 400)
-    ax.set_ylim(-400, 400)   
+#     # Plot the updated data
+#     ax.plot(new_data['0'], new_data['0.1'])   
 
-    # Add labels and title
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-    ax.set_title('Real-Time Chart')
+#     # Optionally set axis limits
+#     ax.set_xlim(-400, 400)
+#     ax.set_ylim(-400, 400)   
 
-def start_animation():
-    anim = FuncAnimation(fig, update_chart, interval=5)
-    plt.show()
+#     # Add labels and title
+#     ax.set_xlabel('X')
+#     ax.set_ylabel('Y')
+#     ax.set_title('Real-Time Chart')
 
-start_animation()
+# def start_animation():
+#     anim = FuncAnimation(fig, update_chart, interval=5)
+#     plt.show()
+
+# start_animation()

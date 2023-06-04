@@ -1,0 +1,7 @@
+## Run enviroment
+
+py -m venv enviroment
+
+## Activate 
+
+./enviroment/Scripts/activate

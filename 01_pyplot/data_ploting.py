@@ -7,11 +7,17 @@ import csv
 import pandas as pd
 from matplotlib.animation import FuncAnimation
 
-### Create a csv file ###
-header = ['x', 'y', 'z', 'robot_x', 'robot_y', 'robot_z']
-with open('storeData.csv', 'w', encoding='UTF8', newline='') as file:
+### Create a csv file for 2D ###
+header1 = ['x', 'y', 'z', 'yaw', 'pitch', 'robot_x', 'robot_y', 'robot_z']
+with open('storeData2D.csv', 'w', encoding='UTF8', newline='') as file:
     writer = csv.writer(file)
-    writer.writerow(header)
+    writer.writerow(header1)
+
+### Create a csv file for 3D ###
+header2 = ['x', 'y', 'z', 'yaw', 'pitch', 'robot_x', 'robot_y', 'robot_z']
+with open('storeData3D.csv', 'w', encoding='UTF8', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(header2)
 
 # Define function drawing 3D Mapping 
 def drawing3D():
@@ -60,7 +66,15 @@ def drawing3D():
                     yAxes2.append(dist*(np.cos(pitch))*(np.sin(yaw)))
                     zAxes2.append(dist*(np.sin(pitch)))
 
-                
+                x_temp = dist*(np.cos(pitch))*(np.cos(yaw))
+                y_temp = dist*(np.cos(pitch))*(np.sin(yaw))
+                z_temp = dist*(np.sin(pitch))
+
+                writeList = [x_temp, y_temp, z_temp, yaw, pitch, robot_pos_x, robot_pos_y, robot_pos_z]
+                with open('storeData3D.csv', 'a', encoding='UTF8', newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerow(writeList)
+
                 xTemp= dist*(np.cos(pitch))*(np.cos(yaw))               
                 yTemp= dist*(np.cos(pitch))*(np.sin(yaw))
                 zTemp= dist*(np.sin(pitch))
@@ -158,8 +172,8 @@ def drawing2D():
             xTemp = dist*(np.cos(yaw))
             yTemp = dist*(np.sin(yaw))
 
-            writeList = [xTemp, yTemp, "0", robot_pos_x, robot_pos_y, robot_pos_z]
-            with open('storeData.csv', 'a', encoding='UTF8', newline='') as file:
+            writeList = [xTemp, yTemp, "0", yaw, "0", robot_pos_x, robot_pos_y, robot_pos_z]
+            with open('storeData2D.csv', 'a', encoding='UTF8', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow(writeList)
                 
@@ -187,9 +201,13 @@ while programWorking:
     # Three modes: 0: Stop Lidar || 1: 2D 5 rounds || 2: 3D 90 degree pitch (Test may be 20 degree )
     print("Waiting for input number: ")
     modeWorking = input("Enter a mode working: ") # Taking input from user
-    robot_pos_x = float(input("Enter robot x_position: "))
-    robot_pos_y = float(input("Enter robot y_position: "))
-    robot_pos_z = float(input("Enter robot z_position: "))
+    if modeWorking != '0':
+        robot_pos_x = float(input("Enter robot x_position: "))
+        robot_pos_y = float(input("Enter robot y_position: "))
+        robot_pos_z = float(input("Enter robot z_position: "))
+    else:
+        ## Do nothing
+        pass
     arduino.write(bytes(modeWorking, 'utf-8'))
     time.sleep(0.05)
     if(modeWorking== '0'):
